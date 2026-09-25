@@ -1,4 +1,4 @@
-![version](https://img.shields.io/badge/version-1.0.3-blue)
+![version](https://img.shields.io/badge/version-1.0.4-blue)
 # csv-team-stats-parser
 
 Microservicio que transforma las estadísticas de equipo generadas por `python-pyppeter`.
