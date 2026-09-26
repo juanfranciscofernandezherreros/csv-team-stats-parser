@@ -1,4 +1,4 @@
-![version](https://img.shields.io/badge/version-1.1.1-blue)
+![version](https://img.shields.io/badge/version-1.2.0-blue)
 # csv-team-stats-parser
 
 Microservicio que transforma las estadísticas de equipo generadas por `python-pyppeter`.
@@ -14,6 +14,10 @@ match_id,period,category,metric,home_team,home_value,away_team,away_value,source
 ```
 
 Publica un `TeamStatsKey / TeamStatsValue` por métrica y periodo. Conserva los valores como texto porque Flashscore mezcla enteros, decimales y porcentajes. No usa PostgreSQL, JPA ni Flyway.
+
+## Publicación Kafka por chunks
+
+KAN-71 elimina la espera `send(...).join()` por cada métrica. Las filas de cada chunk de hasta 500 se envían sin bloqueo secuencial y se espera una única vez con `CompletableFuture.allOf(...)` antes de avanzar al siguiente chunk. Todos los mensajes mantienen la key definida por el mapper, por lo que Kafka conserva la semántica de particionamiento. Si cualquier ACK falla, el procesamiento falla y entra en la estrategia común de retry/DLT.
 
 ## Contratos Avro compartidos
 
