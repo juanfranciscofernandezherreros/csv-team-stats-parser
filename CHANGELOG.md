@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0 - 2026-09-26
+
+- [minor] KAN-71 sustituye `send(...).join()` por fila por publicación asíncrona de cada chunk.
+- [minor] Espera una única barrera `CompletableFuture.allOf(...)` antes de continuar.
+- [minor] Mantiene particionamiento y propagación de errores Kafka.
+- [minor] Añade tests que verifican ausencia de bloqueo secuencial y fallo ante ACK erróneo.
+
+
 ## 1.1.1 - 2026-09-26
 
 - [patch] KAN-112 captura fallos de deserialización Avro mediante `ErrorHandlingDeserializer`.
