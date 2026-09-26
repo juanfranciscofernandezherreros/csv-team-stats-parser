@@ -1,4 +1,4 @@
-![version](https://img.shields.io/badge/version-1.1.0-blue)
+![version](https://img.shields.io/badge/version-1.1.1-blue)
 # csv-team-stats-parser
 
 Microservicio que transforma las estadísticas de equipo generadas por `python-pyppeter`.
@@ -41,4 +41,4 @@ KAN-112 aplica la política de KAN-18 al consumo de `file.ready.team-stats`.
 - `KAFKA_RETRY_BACKOFF_MS`: backoff fijo, default `1000`;
 - `KAFKA_TEAM_STATS_PARSER_DLT_TOPIC`: topic DLT configurable.
 
-La DLT conserva el evento original y los headers de diagnóstico de Spring Kafka.
+El consumer usa `ErrorHandlingDeserializer` para que un Avro corrupto entre en el flujo normal de recuperación. La DLT acepta objetos Avro y los `byte[]` originales, deja que Kafka seleccione una partición válida, conserva los headers de excepción de Spring Kafka y hace visible cualquier fallo al publicar en DLT.
