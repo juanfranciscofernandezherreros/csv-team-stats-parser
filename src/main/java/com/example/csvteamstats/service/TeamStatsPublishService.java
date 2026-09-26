@@ -10,6 +10,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class TeamStatsPublishService {
@@ -33,8 +34,12 @@ public class TeamStatsPublishService {
 
     public void publishFile(String eventId, String filePath) {
         try {
-            parser.parseInChunks(Path.of(filePath), CHUNK_SIZE, rows ->
-                    rows.forEach(row -> kafka.send(topic, mapper.toKey(eventId, row), mapper.toValue(eventId, row)).join()));
+            parser.parseInChunks(Path.of(filePath), CHUNK_SIZE, rows -> {
+                CompletableFuture<?>[] sends = rows.stream()
+                        .map(row -> kafka.send(topic, mapper.toKey(eventId, row), mapper.toValue(eventId, row)))
+                        .toArray(CompletableFuture[]::new);
+                CompletableFuture.allOf(sends).join();
+            });
         } catch (Exception exception) {
             if (containsKafkaFailure(exception)) {
                 if (exception instanceof RuntimeException runtimeException) {
